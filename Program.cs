@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -77,10 +78,6 @@ namespace Homework_05
             }
             return matrixC;
         }
-
-
-
-
         #endregion
 
         /// <summary>
@@ -94,7 +91,7 @@ namespace Homework_05
         /// <returns>Возвращает случайную вещественную матрицу размером n * m</returns>
         public static double[,] GenerateRandomMatrix(Random rnd, int n, int m, int a, int b)
         {
-            
+
             double[,] randMatrix = new double[n, m];
 
             for (int i = 0; i < randMatrix.GetLength(0); i++)
@@ -125,6 +122,175 @@ namespace Homework_05
         }
 
 
+        #region             // 1. Создать метод, принимающий  текст и возвращающий слово, содержащее минимальное количество букв
+
+        // Пример: Текст: "A ББ ВВВ ГГГГ ДДДД  ДД ЕЕ ЖЖ ЗЗЗ"
+        // 1. Ответ: А
+        // 2. ГГГГ, ДДДД
+
+
+        
+        public static void printString(string text)
+        {
+            string[] subs = text.Split();
+            foreach (string item in subs)
+            {
+                Console.WriteLine(item.ToString());
+            }
+        }
+
+        //Разбить строку на подстроки, отсортировать их по длине.
+
+        public static string getMinimalLengthWord(string text)
+        {
+            string[] subs = text.Split();
+
+            for (int i = 0; i < subs.Length; i++)
+            {
+                for (int j = i+1; j < subs.Length; j++)
+                {
+                    if (subs[i].Length > subs[j].Length)
+                    {
+                        string tmp = " ";
+                        tmp = subs[i];
+                        subs[i] = subs[j];
+                        subs[j] = tmp;
+                    }
+                }
+            }
+            return subs[0];
+        }
+
+
+        #endregion
+
+        #region         // 2.* Создать метод, принимающий  текст и возвращающий слово(слова) с максимальным количеством букв 
+        // // Пример: Текст: "A ББ ВВВ ГГГГ ДДДД  ДД ЕЕ ЖЖ ЗЗЗ"
+        // Ответ: ГГГГ, ДДДД
+        // Примечание: слова в тексте могут быть разделены символами (пробелом, точкой, запятой)
+
+        //TO DO: возвращать все слова с максимальным количеством букв.
+
+        public static string getMaxLengthWord(string text)
+        {
+            string[] subs = text.Split();
+
+            for (int i = 0; i < subs.Length; i++)
+            {
+                for (int j = i + 1; j < subs.Length; j++)
+                {
+                    if (subs[i].Length < subs[j].Length)
+                    {
+                        string tmp = " ";
+                        tmp = subs[i];
+                        subs[i] = subs[j];
+                        subs[j] = tmp;
+                    }
+                }
+            }
+            Array.Reverse(subs);
+            return subs[subs.Length-1];
+        }
+
+
+        #endregion
+
+
+        #region  Проверка на прогрессию.
+        // Задание 4. Написать метод принимающий некоторое количесво чисел, выяснить  
+        //  является заданная последовательность элементами арифметической или геометрической прогрессии
+
+        public static void isProgression(params double[] nums)
+        {
+            bool isArithmetic = false;
+            bool isGeometric = false;
+            double d = (nums[nums.Length - 1] - nums[0]) / (nums.Length - 1); 
+            double ratio = nums[1] / nums[0];
+
+            for (int i = 0; i < nums.Length; i++)
+            {
+                for (int j = 1; j < nums.Length-1; j++)
+                {
+                    if(nums[0]!=0)
+                    {
+                        d = (nums[nums.Length - 1] - nums[0]) / (nums.Length - 1);
+
+                        if ((nums[j - 1] + nums[j + 1]) * 0.5 == nums[j])
+                            {
+                                isArithmetic = true;
+                            }
+                        else
+                            {
+                                isArithmetic = false;
+                            }   
+                    }
+                    if(nums[0]==0)
+                    {
+                        d = (nums[nums.Length - 1] / nums[1]) / (nums.Length - 2);
+                        
+                            if ((nums[j - 1] + nums[j + 1]) * 0.5 == nums[j])
+                            {
+                                isArithmetic = true;
+                            }
+                            else
+                            {
+                                isArithmetic = false;
+                            }
+                    }
+                    if(Math.Sqrt(nums[j-1]*nums[j+1])==nums[j])
+                    {
+                        isGeometric = true;
+                    }
+                    else
+                    {
+                        isGeometric = false;
+                    }
+                }
+            }
+            if (isArithmetic)
+            {
+                Console.WriteLine("Arithmetic");
+            }
+            if (isGeometric)
+            {
+                Console.WriteLine("Geometric");
+            }
+            if(!isArithmetic && !isGeometric)
+            {
+                Console.WriteLine("Not arithmetic and not geometric");
+            }
+        }
+
+
+
+
+        #endregion
+
+
+        #region Функция Аккермана
+
+        /*
+         * 
+         *  // A(2, 5), A(1, 2)
+            // A(n, m) = m + 1, если n = 0,
+            //         = A(n - 1, 1), если n <> 0, m = 0,
+            //         = A(n - 1, A(n, m - 1)), если n> 0, m > 0.
+            // 
+         * 
+         * */
+
+
+            static int Ackermann (int n, int m)
+        {
+
+            return (n == 0) ? (m + 1) : ((m == 0) ? (Ackermann(n - 1, 1)) : Ackermann(n - 1, Ackermann(n, m - 1))); 
+        }
+
+
+        #endregion
+
+
+
         static void Main(string[] args)
         {
             Random rnd = new Random();
@@ -134,7 +300,9 @@ namespace Homework_05
 
             double lambda; //Вещественный множитель
 
+            #region commented matrix
 
+            
 
             Console.WriteLine("Enter number of rows \'n\' (non negative): ");
             n = Convert.ToInt32(Console.ReadLine());
@@ -199,6 +367,31 @@ namespace Homework_05
             Console.WriteLine("A * X is:");
             matrixMultResult = MatrixMatrixMultiplier(matrixA, matrixMult);
             PrintMatrix(matrixMultResult);
+
+           
+
+            
+            #endregion
+
+
+
+
+            printString(getMinimalLengthWord("a aa AAA MMMM SSS dsds DS"));
+
+            printString(getMaxLengthWord("assaas as a dddddddddddd sds"));
+
+            isProgression(0, 2, 4, 6 , 7);
+
+            isProgression(2, 4, 6, 8, 10);
+
+            isProgression(-1, 1, 3, 5);
+
+            isProgression(1, 2, 4, 8);
+
+            Console.WriteLine(Ackermann(2,5));
+
+            Console.WriteLine(Ackermann(1,2));
+
             Console.ReadKey();
         }
     }
